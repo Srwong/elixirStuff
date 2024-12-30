@@ -20,6 +20,7 @@ IO.puts(Factorial.do_it(5))
 IO.puts(Factorial.do_optimized(5))
 
 IO.puts(ListUtils.sum([1, 2, 3, 4, 5]))
+#Redice uses an accumulator and applies the function to each element of the list
 IO.puts(Enum.reduce([1, 2, 3, 4,5], fn(x, acc) -> x + acc end))
 
 #create maps
