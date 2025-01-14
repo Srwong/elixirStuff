@@ -21,40 +21,40 @@ defmodule Rover do
 
   #thhese are constants
   @world_width 100
-  @world_heigth 100
+  @world_height 100
   def go_forward(name) do
-    GenServer.cast(RegistryHelper.create_key(name), :go_forward)
+    GenServer.cast(String.to_atom(name), :go_forward)
   end
-  def handle_call(:go_forward, state) do
+  def handle_cast(:go_forward, state) do
     new_state = case state.dir do
       # the pipe operator is used to merge the states
-      :N -> %Rover{ state | x: state.x, y: mod(state.y +1, @world_heigth)}
-      :S -> %Rover{ state | x: state.x, y: mod(state.y - 1, @world_heigth)}
-      :E -> %Rover{ state | x: mod(state.x + 1, @world_width), y: state.y}
-      :W -> %Rover{ state | x: mod(state.x - 1, @world_width), y: state.y}
+      :N -> %Rover{ state | y: Integer.mod(state.y + 1, @world_height) }
+      :S -> %Rover{ state | y: Integer.mod(state.y - 1, @world_height) }
+      :E -> %Rover{ state | x: Integer.mod(state.x + 1, @world_width) }
+      :W -> %Rover{ state | x: Integer.mod(state.x - 1, @world_width) }
     end
 
-    {:no_reply, new_state}
+    {:noreply, new_state}
   end
 
   def go_backward(name) do
-    GenServer.cast(RegistryHelper.create_key(name), :go_backward)
+    GenServer.cast(String.to_atom(name), :go_backward)
   end
-  def handle_call(:go_backward, state) do
+  def handle_cast(:go_backward, state) do
     new_state = case state.dir do
-      :N -> %Rover{ state | x: state.x, y: mod(state.y - 1, @world_heigth)}
-      :S -> %Rover{ state | x: state.x, y: mod(state.y + 1, @world_heigth)}
-      :E -> %Rover{ state | x: mod(state.x - 1, @world_width), y: state.y}
-      :W -> %Rover{ state | x: mod(state.x + 1, @world_width), y: state.y}
+      :N -> %Rover{ state | y: Integer.mod(state.y - 1, @world_height)}
+      :S -> %Rover{ state | y: Integer.mod(state.y + 1, @world_height)}
+      :E -> %Rover{ state | x: Integer.mod(state.x - 1, @world_width)}
+      :W -> %Rover{ state | x: Integer.mod(state.x + 1, @world_width)}
     end
 
-    {:no_reply, new_state}
+    {:noreply, new_state}
   end
 
   def rotate_left(name) do
-    GenServer.cast(RegistryHelper.create_key(name), :rotate_left)
+    GenServer.cast(String.to_atom(name), :rotate_left)
   end
-  def handle_call(:rotate_left, state) do
+  def handle_cast(:rotate_left, state) do
     new_state = case state.dir do
       :N -> %Rover{ state | dir: :W}
       :S -> %Rover{ state | dir: :E}
@@ -62,13 +62,13 @@ defmodule Rover do
       :W -> %Rover{ state | dir: :S}
     end
 
-    {:no_reply, new_state}
+    {:noreply, new_state}
   end
 
   def rotate_right(name) do
-    GenServer.cast(RegistryHelper.create_key(name), :rotate_right)
+    GenServer.cast(String.to_atom(name), :rotate_right)
   end
-  def handle_call(:rotate_right, state) do
+  def handle_cast(:rotate_right, state) do
     new_state = case state.dir do
       :N -> %Rover{ state | dir: :E}
       :S -> %Rover{ state | dir: :W}
@@ -76,6 +76,6 @@ defmodule Rover do
       :W -> %Rover{ state | dir: :N}
     end
 
-    {:no_reply, new_state}
+    {:noreply, new_state}
   end
 end
