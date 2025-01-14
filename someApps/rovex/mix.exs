@@ -12,9 +12,11 @@ defmodule Rovex.MixProject do
   end
 
   # Run "mix help compile.app" to learn about applications.
+  # Returns the list of applications to start and the main module
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Rover.Application, []}
     ]
   end
 
