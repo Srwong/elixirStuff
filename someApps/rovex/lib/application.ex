@@ -7,7 +7,10 @@ defmodule Rover.Application do
     #we will start this child process, a register for rovers and the supervisor to create or kill them
     children = [
       Supervisor.child_spec({Registry, [keys: :unique, name: Rover.Registry]}, id: :rover_registry),
+      Supervisor.child_spec({Registry, [keys: :duplicate, name: Socket.Registry]}, id: :socket_registry),
       Supervisor.child_spec({RoverSupervisor, []}, id: RoverSupervisor),
+      Supervisor.child_spec({{WorldMap, []}, []}),
+      Plug.Adapters.Cowboy.child_spec(:http, Rover.Web.Router, [], port: 4000),
     ]
 
     opts = [strategy: :one_for_one, name: Application.Supervisor]
