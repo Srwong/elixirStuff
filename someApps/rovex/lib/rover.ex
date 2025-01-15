@@ -19,6 +19,16 @@ defmodule Rover do
     {:reply, {:ok,{state.x,state.y,state.dir}}, state}
   end
 
+  #for our API
+  def send_command(name, command) do
+    case command do
+      :F -> go_forward(name)
+      :B -> go_backward(name)
+      :L -> rotate_left(name)
+      :R -> rotate_right(name)
+    end
+  end
+
   #thhese are constants
   @world_width 100
   @world_height 100
@@ -34,6 +44,7 @@ defmodule Rover do
       :W -> %Rover{ state | x: Integer.mod(state.x - 1, @world_width) }
     end
 
+    WorldMap.update_rover(state.name, new_state.x, new_state.y)
     {:noreply, new_state}
   end
 
@@ -48,6 +59,7 @@ defmodule Rover do
       :W -> %Rover{ state | x: Integer.mod(state.x + 1, @world_width)}
     end
 
+    WorldMap.update_rover(state.name, new_state.x, new_state.y)
     {:noreply, new_state}
   end
 
