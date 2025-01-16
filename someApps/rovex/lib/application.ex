@@ -9,11 +9,25 @@ defmodule Rover.Application do
       Supervisor.child_spec({Registry, [keys: :unique, name: Rover.Registry]}, id: :rover_registry),
       Supervisor.child_spec({Registry, [keys: :duplicate, name: Socket.Registry]}, id: :socket_registry),
       Supervisor.child_spec({RoverSupervisor, []}, id: RoverSupervisor),
-      Supervisor.child_spec({{WorldMap, []}, []}),
+      {WorldMap, []},
       Plug.Adapters.Cowboy.child_spec(:http, Rover.Web.Router, [], port: 4000),
+      Plug.Adapters.Cowboy.child_spec(:http, Rover.Web.WsServer, [], port: 4001, dispatch: dispatch())
     ]
 
     opts = [strategy: :one_for_one, name: Application.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  #web socket
+  defp dispatch do
+    [
+      {
+        :_,
+        [
+          {"/ws", Rover.Web.WsServer, []},
+          {:_, Plug.Adapter.Cowboy.Handler, {Rover.Web.Router, []}}
+        ]
+      }
+    ]
   end
 end
