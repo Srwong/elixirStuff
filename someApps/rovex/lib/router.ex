@@ -14,15 +14,16 @@ defmodule Rover.Web.Router do
   end
 
   post "/rover" do
+    rover_name = conn.body_params["name"]
     case RoverSupervisor.create_rover(
-      conn.body_params["name"],
+      rover_name,
       conn.body_params["x"],
       conn.body_params["y"],
-      conn.body_params["dir"]
+      String.to_atom(conn.body_params["d"])
     ) do
-      {:ok, _} -> send_resp(conn, 201, Poison,encode!(%{message: "created rover #{rover_name}"}))
-      {:error, :already_started} -> send_resp(conn, 401, encode(%{message: "rover already exists"}))
-      _ -> send_resp(conn, 500, encode(%{message: "error creating rover"}))
+      {:ok, _} -> send_resp(conn, 201, Poison.encode!(%{message: "created rover #{rover_name}"}))
+      {:error, :already_started} -> send_resp(conn, 401, Poison.encode!(%{message: "rover already exists"}))
+      _ -> send_resp(conn, 500, Poison.encode!(%{message: "error creating rover"}))
     end
   end
 
