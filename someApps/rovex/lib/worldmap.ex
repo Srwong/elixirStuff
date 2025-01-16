@@ -15,7 +15,7 @@ defmodule WorldMap do
   defp update_rover_list(rovers, name, x, y) do
     case Enum.find_index(rovers, fn r -> r.name == name end) do
       nil -> rovers++[%{x: x, y: y, name: name}]
-      rover -> List.replace_at(rovers, index, %{x: x, y: y, name: name})
+      index -> List.replace_at(rovers, index, %{x: x, y: y, name: name})
     end
   end
 
